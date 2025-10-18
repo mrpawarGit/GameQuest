@@ -1,0 +1,5 @@
+{
+  "name": "React Snake Game",
+  "description": "A classic Snake game built with React, TypeScript, and Tailwind CSS. Control the snake with arrow keys to eat apples, grow longer, and increase your score. Avoid hitting the walls or your own tail!",
+  "requestFramePermissions": []
+}
