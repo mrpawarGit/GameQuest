@@ -1,6 +1,5 @@
-
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Point, Direction } from './types';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Point, Direction } from "./types";
 import {
   BOARD_SIZE,
   TILE_SIZE,
@@ -12,7 +11,7 @@ import {
   INITIAL_SPEED,
   SPEED_INCREMENT,
   MIN_SPEED,
-} from './constants';
+} from "./constants";
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,7 +29,11 @@ const App: React.FC = () => {
         x: Math.floor(Math.random() * BOARD_SIZE),
         y: Math.floor(Math.random() * BOARD_SIZE),
       };
-      if (!currentSnake.some(segment => segment.x === newApple.x && segment.y === newApple.y)) {
+      if (
+        !currentSnake.some(
+          (segment) => segment.x === newApple.x && segment.y === newApple.y
+        )
+      ) {
         return newApple;
       }
     }
@@ -49,32 +52,36 @@ const App: React.FC = () => {
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const newDirection = directionRef.current;
     switch (e.key) {
-      case 'ArrowUp':
-        if (newDirection !== Direction.DOWN) directionRef.current = Direction.UP;
+      case "ArrowUp":
+        if (newDirection !== Direction.DOWN)
+          directionRef.current = Direction.UP;
         break;
-      case 'ArrowDown':
-        if (newDirection !== Direction.UP) directionRef.current = Direction.DOWN;
+      case "ArrowDown":
+        if (newDirection !== Direction.UP)
+          directionRef.current = Direction.DOWN;
         break;
-      case 'ArrowLeft':
-        if (newDirection !== Direction.RIGHT) directionRef.current = Direction.LEFT;
+      case "ArrowLeft":
+        if (newDirection !== Direction.RIGHT)
+          directionRef.current = Direction.LEFT;
         break;
-      case 'ArrowRight':
-        if (newDirection !== Direction.LEFT) directionRef.current = Direction.RIGHT;
+      case "ArrowRight":
+        if (newDirection !== Direction.LEFT)
+          directionRef.current = Direction.RIGHT;
         break;
     }
   }, []);
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
 
   const gameLoop = useCallback(() => {
     if (isGameOver || !isGameRunning) return;
 
-    setSnake(prevSnake => {
+    setSnake((prevSnake) => {
       const newSnake = [...prevSnake];
       const head = { ...newSnake[0] };
 
@@ -92,9 +99,14 @@ const App: React.FC = () => {
           head.x += 1;
           break;
       }
-      
+
       // Wall collision
-      if (head.x < 0 || head.x >= BOARD_SIZE || head.y < 0 || head.y >= BOARD_SIZE) {
+      if (
+        head.x < 0 ||
+        head.x >= BOARD_SIZE ||
+        head.y < 0 ||
+        head.y >= BOARD_SIZE
+      ) {
         setIsGameOver(true);
         setIsGameRunning(false);
         return prevSnake;
@@ -113,13 +125,15 @@ const App: React.FC = () => {
 
       // Apple consumption
       if (head.x === apple.x && head.y === apple.y) {
-        setScore(prevScore => prevScore + 1);
-        setSpeed(prevSpeed => Math.max(MIN_SPEED, prevSpeed - SPEED_INCREMENT));
+        setScore((prevScore) => prevScore + 1);
+        setSpeed((prevSpeed) =>
+          Math.max(MIN_SPEED, prevSpeed - SPEED_INCREMENT)
+        );
         setApple(createRandomApple(newSnake));
       } else {
         newSnake.pop();
       }
-      
+
       return newSnake;
     });
   }, [apple, isGameOver, isGameRunning, createRandomApple]);
@@ -134,23 +148,33 @@ const App: React.FC = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     // Clear canvas
-    ctx.fillStyle = '#1a202c'; // dark gray-blue
+    ctx.fillStyle = "#1a202c"; // dark gray-blue
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // Draw snake
     snake.forEach((segment, index) => {
-      ctx.fillStyle = index === 0 ? '#48bb78' : '#38a169'; // shades of green
-      ctx.fillRect(segment.x * TILE_SIZE, segment.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-      ctx.strokeStyle = '#1a202c';
-      ctx.strokeRect(segment.x * TILE_SIZE, segment.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = index === 0 ? "#48bb78" : "#38a169"; // shades of green
+      ctx.fillRect(
+        segment.x * TILE_SIZE,
+        segment.y * TILE_SIZE,
+        TILE_SIZE,
+        TILE_SIZE
+      );
+      ctx.strokeStyle = "#1a202c";
+      ctx.strokeRect(
+        segment.x * TILE_SIZE,
+        segment.y * TILE_SIZE,
+        TILE_SIZE,
+        TILE_SIZE
+      );
     });
 
     // Draw apple
-    ctx.fillStyle = '#f56565'; // red
+    ctx.fillStyle = "#f56565"; // red
     ctx.beginPath();
     ctx.arc(
       apple.x * TILE_SIZE + TILE_SIZE / 2,
@@ -160,19 +184,23 @@ const App: React.FC = () => {
       2 * Math.PI
     );
     ctx.fill();
-
   }, [snake, apple]);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-900 font-mono p-4">
-      <h1 className="text-4xl font-bold text-green-400 mb-4 tracking-widest">REACT SNAKE</h1>
+      <h1 className="text-4xl font-bold text-green-400 mb-4 tracking-widest">
+        REACT SNAKE
+      </h1>
+      <br />
       <div className="relative bg-gray-800 border-4 border-green-500 shadow-lg shadow-green-500/20 rounded-lg">
         <div className="absolute -top-10 left-0 w-full flex justify-center">
-            <div className="bg-gray-900 border-2 border-green-500 px-6 py-1 rounded-md">
-                <span className="text-2xl font-bold text-white">Score: {score}</span>
-            </div>
+          <div className="bg-gray-900 border-2 border-green-500 px-6 py-1 rounded-md">
+            <span className="text-2xl font-bold text-white">
+              Score: {score}
+            </span>
+          </div>
         </div>
-        
+
         <canvas
           ref={canvasRef}
           width={CANVAS_WIDTH}
@@ -185,7 +213,9 @@ const App: React.FC = () => {
             {isGameOver ? (
               <>
                 <h2 className="text-5xl font-bold text-red-500">Game Over</h2>
-                <p className="text-xl text-white mt-2">Your final score is {score}</p>
+                <p className="text-xl text-white mt-2">
+                  Your final score is {score}
+                </p>
                 <button
                   onClick={resetGame}
                   className="mt-8 px-6 py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-colors text-xl"
@@ -194,18 +224,21 @@ const App: React.FC = () => {
                 </button>
               </>
             ) : (
-               <button
-                  onClick={() => setIsGameRunning(true)}
-                  className="mt-8 px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-colors text-2xl animate-pulse"
-                >
-                  Start Game
-                </button>
+              <button
+                onClick={() => setIsGameRunning(true)}
+                className="mt-8 px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-colors text-2xl animate-pulse"
+              >
+                Start Game
+              </button>
             )}
           </div>
         )}
       </div>
       <div className="mt-6 text-gray-400 text-center">
-        <p>Use <span className="font-bold text-green-400">Arrow Keys</span> to move</p>
+        <p>
+          Use <span className="font-bold text-green-400">Arrow Keys</span> to
+          move
+        </p>
       </div>
     </div>
   );
