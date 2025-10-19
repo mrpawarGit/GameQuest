@@ -1,5 +1,4 @@
-
-import { Point, Direction } from './types';
+import { Point, Direction, Difficulty } from './types';
 
 export const BOARD_SIZE = 20;
 export const TILE_SIZE = 25;
@@ -14,6 +13,14 @@ export const INITIAL_SNAKE_POSITION: Point[] = [
 
 export const INITIAL_APPLE_POSITION: Point = { x: 15, y: 15 };
 export const INITIAL_DIRECTION = Direction.RIGHT;
-export const INITIAL_SPEED = 200;
-export const SPEED_INCREMENT = 5;
+
+export const DIFFICULTY_SETTINGS: Record<
+  Difficulty,
+  { speed: number; increment: number }
+> = {
+  Easy: { speed: 200, increment: 5 },
+  Medium: { speed: 150, increment: 7 },
+  Hard: { speed: 100, increment: 10 },
+};
+
 export const MIN_SPEED = 50;
