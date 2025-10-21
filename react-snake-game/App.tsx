@@ -195,6 +195,13 @@ const App: React.FC = () => {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      // Prevent default behavior for arrow keys and space
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
+      ) {
+        e.preventDefault();
+      }
+
       if (e.key === "Escape") {
         togglePause();
         return;
