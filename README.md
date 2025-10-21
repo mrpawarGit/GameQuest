@@ -2,10 +2,12 @@
 
 A modern, feature-rich Snake game built with React, TypeScript, HTML5 Canvas, and Firebase. Play the classic game with cloud-synced high scores, optional authentication, and a beautiful responsive interface.
 
+# 🎮 Live - [**Play Snake Hub**](https://snake-hub.vercel.app/)
+
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ffc01b05-4711-4b8a-94dc-c4e0967457f7" />
 
-
 ### Gameplay
+
 - **Three Difficulty Levels**: Easy, Medium, and Hard with different speeds and acceleration
 - **Progressive Difficulty**: Game speed increases as you eat more apples
 - **Responsive Controls**: Arrow Keys and WASD support
@@ -14,6 +16,7 @@ A modern, feature-rich Snake game built with React, TypeScript, HTML5 Canvas, an
 - **Smooth Animations**: Canvas-based rendering with directional snake eyes
 
 ### Authentication & Cloud Features
+
 - **Firebase Authentication**: Sign in with Google
 - **Guest Mode**: Play without signing in
 - **Cloud High Scores**: Synced across devices for logged-in users
@@ -21,6 +24,7 @@ A modern, feature-rich Snake game built with React, TypeScript, HTML5 Canvas, an
 - **User Profiles**: Display name and profile picture in navbar
 
 ### UI/UX
+
 - **Fully Responsive Design**: Works on mobile, tablet, and desktop
 - **Modern Interface**: Clean design with Tailwind CSS
 - **Loading Screen**: Animated 2-second loading on launch
@@ -49,17 +53,20 @@ A modern, feature-rich Snake game built with React, TypeScript, HTML5 Canvas, an
 ### Installation
 
 1. **Clone the repository**:
+
 ```bash
 git clone https://github.com/mrpawarGit/GameQuest.git
 cd GameQuest/react-snake-game
 ```
 
 2. **Install dependencies**:
+
 ```bash
 npm install
 ```
 
 3. **Set up Firebase**:
+
    - Create a project at [Firebase Console](https://console.firebase.google.com/)
    - Enable **Authentication** → **Google Sign-in**
    - Enable **Firestore Database**
@@ -68,6 +75,7 @@ npm install
 4. **Configure environment variables**:
 
 Create a `.env` file in the root directory:
+
 ```env
 VITE_FIREBASE_API_KEY=your_api_key_here
 VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -78,12 +86,12 @@ VITE_FIREBASE_APP_ID=your_app_id
 ```
 
 5. **Start the development server**:
+
 ```bash
 npm run dev
 ```
 
 6. Open your browser and navigate to `http://localhost:3000`
-
 
 ### Build for Production
 
@@ -128,7 +136,7 @@ react-snake-game/
 ### Difficulty Settings
 
 | Difficulty | Initial Speed | Speed Increment | Min Speed | Description |
-|------------|---------------|-----------------|-----------|-------------|
+| ---------- | ------------- | --------------- | --------- | ----------- |
 | Easy       | 200ms         | 5ms per apple   | 50ms      | Chill vibes |
 | Medium     | 150ms         | 7ms per apple   | 50ms      | Balanced    |
 | Hard       | 100ms         | 10ms per apple  | 50ms      | Pro mode    |
@@ -145,6 +153,7 @@ react-snake-game/
 ## 🛠️ Technologies Used
 
 ### Frontend
+
 - **React 19.2.0** - Modern UI framework
 - **TypeScript 5.8.2** - Type-safe development
 - **Vite 6.2.0** - Lightning-fast build tool
@@ -152,11 +161,13 @@ react-snake-game/
 - **HTML5 Canvas** - High-performance game rendering
 
 ### Backend & Services
+
 - **Firebase Authentication** - Google OAuth
 - **Cloud Firestore** - NoSQL database for scores
 - **Web Audio API** - Retro sound effects
 
 ### Development Tools
+
 - **ESLint** - Code linting
 - **Prettier** - Code formatting (recommended)
 - **Git** - Version control
@@ -166,20 +177,21 @@ react-snake-game/
 ### Modify Board Size & Responsiveness
 
 Edit `constants.ts`:
+
 ```typescript
 export const getResponsiveBoardSize = () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
-  
+
   const availableWidth = Math.min(width - 100, 800);
   const availableHeight = Math.min(height - 300, 800);
-  
+
   // Customize max size
   const maxSize = Math.min(availableWidth, availableHeight);
-  
+
   const tileSize = Math.floor(maxSize / 25);
   const boardSize = Math.floor(maxSize / tileSize);
-  
+
   return { boardSize, tileSize, canvasWidth, canvasHeight };
 };
 ```
@@ -187,6 +199,7 @@ export const getResponsiveBoardSize = () => {
 ### Adjust Difficulty
 
 Edit `constants.ts`:
+
 ```typescript
 export const DIFFICULTY_SETTINGS: Record<
   Difficulty,
@@ -201,6 +214,7 @@ export const DIFFICULTY_SETTINGS: Record<
 ### Change Colors & Theme
 
 Edit canvas rendering in `App.tsx`:
+
 ```typescript
 // Snake colors
 ctx.fillStyle = "#48bb78"; // Head (green-500)
@@ -251,9 +265,9 @@ Contributions are welcome! Here's how:
 
 ### Contributors
 
-- [**Mayur Pawar**](https://github.com/mrpawarGit) 
-- [**Shweta**](https://github.com/Shwetaaa-coder) 
-- [**Manikanta**](https://github.com/kmanikanta9) 
+- [**Mayur Pawar**](https://github.com/mrpawarGit)
+- [**Shweta**](https://github.com/Shwetaaa-coder)
+- [**Manikanta**](https://github.com/kmanikanta9)
 - [**Amutha**](https://github.com/amutharaj0597)
 
 ## 📝 Future Enhancements

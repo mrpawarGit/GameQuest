@@ -195,6 +195,13 @@ const App: React.FC = () => {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      // Prevent default behavior for arrow keys and space
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
+      ) {
+        e.preventDefault();
+      }
+
       if (e.key === "Escape") {
         togglePause();
         return;
@@ -498,7 +505,7 @@ const App: React.FC = () => {
         {/* Game Stats */}
         <div className="w-full max-w-4xl mb-3 sm:mb-4">
           <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
-            <div className="bg-gray-800 border-2 border-green-500 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg shadow-lg">
+            <div className="bg-gray-800 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg shadow-lg">
               <div className="flex flex-col items-center">
                 <span className="text-[10px] sm:text-xs text-gray-400 uppercase">
                   Score
@@ -509,7 +516,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-gray-800 border-2 border-yellow-500 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg shadow-lg">
+            <div className="bg-gray-800 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg shadow-lg">
               <div className="flex flex-col items-center">
                 <span className="text-[10px] sm:text-xs text-gray-400 uppercase">
                   Best
