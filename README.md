@@ -4,7 +4,7 @@ A modern, feature-rich Snake game built with React, TypeScript, HTML5 Canvas, an
 
 # 🎮 Live - [**Play Snake Hub**](https://snake-hub.vercel.app/)
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ffc01b05-4711-4b8a-94dc-c4e0967457f7" />
+<img width="1895" height="967" alt="image" src="https://github.com/user-attachments/assets/f96c1293-1f94-4cd7-aef7-86b623fe4c86" />
 
 ### Gameplay
 
