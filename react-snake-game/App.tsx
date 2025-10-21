@@ -465,17 +465,11 @@ const App: React.FC = () => {
                 {user ? (
                   <>
                     <div className="flex items-center gap-1 sm:gap-2 bg-gray-900 px-2 sm:px-3 py-1 sm:py-2 rounded-lg border border-green-500/30">
-                      {user.photoURL && (
-                        <img
-                          src={user.photoURL}
-                          alt="Profile"
-                          className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-green-500"
-                        />
-                      )}
-                      <span className="text-xs sm:text-sm font-semibold text-white hidden xs:inline max-w-[80px] sm:max-w-none truncate">
-                        {user.displayName?.split(" ")[0] || "Player"}
+                      <span className="text-xs sm:text-sm font-semibold text-white">
+                        {user.displayName || "Player"}
                       </span>
                     </div>
+
                     <button
                       onClick={handleLogout}
                       className="bg-red-500 hover:bg-red-600 text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-all font-semibold text-xs sm:text-sm flex items-center gap-1 sm:gap-2"
