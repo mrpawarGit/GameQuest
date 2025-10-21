@@ -24,3 +24,4 @@ export const DIFFICULTY_SETTINGS: Record<
 };
 
 export const MIN_SPEED = 50;
+export const HIGH_SCORE_STORAGE_KEY = 'snakeHighScore';
