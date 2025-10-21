@@ -124,12 +124,16 @@ const App: React.FC = () => {
     [createRandomApple]
   );
 
+  const togglePause = useCallback(() => {
+    if (difficulty && !isGameOver) {
+      setIsPaused((prev) => !prev);
+    }
+  }, [difficulty, isGameOver]);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (difficulty && !isGameOver) {
-          setIsPaused((prev) => !prev);
-        }
+        togglePause();
         return;
       }
 
@@ -153,7 +157,7 @@ const App: React.FC = () => {
           break;
       }
     },
-    [difficulty, isGameOver]
+    [togglePause]
   );
 
   useEffect(() => {
@@ -339,7 +343,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-900 font-mono p-4">
       <h1 className="text-4xl font-bold text-green-400 mb-4 tracking-widest">
-        REACT SNAKE
+        SNAKE HUB
       </h1>
       <br />
       <br />
@@ -360,6 +364,15 @@ const App: React.FC = () => {
           >
             {isMuted ? "🔇" : "🔊"}
           </button>
+          {difficulty && !isGameOver && (
+            <button
+              onClick={togglePause}
+              className="bg-gray-900 border-2 border-green-500 px-3 py-2 rounded-md text-xl"
+              aria-label={isPaused ? "Resume Game" : "Pause Game"}
+            >
+              {isPaused ? "▶️" : "⏸️"}
+            </button>
+          )}
         </div>
 
         <canvas
@@ -374,7 +387,9 @@ const App: React.FC = () => {
             <h2 className="text-5xl font-bold text-yellow-400 animate-pulse">
               Paused
             </h2>
-            <p className="mt-4 text-white text-lg">Press 'Escape' to Resume</p>
+            <p className="mt-4 text-white text-lg">
+              Press 'Escape' or the Resume button to continue
+            </p>
           </div>
         )}
 
@@ -429,7 +444,9 @@ const App: React.FC = () => {
           move
         </p>
         <p>
-          Press <span className="font-bold text-green-400">Escape</span> to
+          Press <span className="font-bold text-green-400">Escape</span> or
+          click the{" "}
+          <span className="font-bold text-green-400">Pause Button</span> to
           Pause/Resume
         </p>
       </div>
