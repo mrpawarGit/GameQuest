@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Point, Direction, Difficulty } from "./types";
 import {
-  BOARD_SIZE,
-  TILE_SIZE,
-  CANVAS_WIDTH,
-  CANVAS_HEIGHT,
+  getResponsiveBoardSize,
   INITIAL_SNAKE_POSITION,
   INITIAL_APPLE_POSITION,
   INITIAL_DIRECTION,
@@ -17,6 +14,10 @@ const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
+  // Responsive board dimensions
+  const [boardConfig, setBoardConfig] = useState(getResponsiveBoardSize());
+  const { boardSize, tileSize, canvasWidth, canvasHeight } = boardConfig;
+
   const [snake, setSnake] = useState<Point[]>(INITIAL_SNAKE_POSITION);
   const [apple, setApple] = useState<Point>(INITIAL_APPLE_POSITION);
   const directionRef = useRef<Direction>(INITIAL_DIRECTION);
@@ -27,6 +28,19 @@ const App: React.FC = () => {
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (!difficulty) {
+        // Only resize when not playing
+        setBoardConfig(getResponsiveBoardSize());
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [difficulty]);
 
   useEffect(() => {
     const savedHighScore = localStorage.getItem(HIGH_SCORE_STORAGE_KEY);
@@ -81,21 +95,31 @@ const App: React.FC = () => {
     [isMuted]
   );
 
-  const createRandomApple = useCallback((currentSnake: Point[]): Point => {
-    while (true) {
-      const newApple = {
-        x: Math.floor(Math.random() * BOARD_SIZE),
-        y: Math.floor(Math.random() * BOARD_SIZE),
-      };
-      if (
-        !currentSnake.some(
-          (segment) => segment.x === newApple.x && segment.y === newApple.y
-        )
-      ) {
-        return newApple;
+  const createRandomApple = useCallback(
+    (currentSnake: Point[]): Point => {
+      let attempts = 0;
+      const maxAttempts = 1000;
+
+      while (attempts < maxAttempts) {
+        const newApple = {
+          x: Math.floor(Math.random() * boardSize),
+          y: Math.floor(Math.random() * boardSize),
+        };
+        if (
+          !currentSnake.some(
+            (segment) => segment.x === newApple.x && segment.y === newApple.y
+          )
+        ) {
+          return newApple;
+        }
+        attempts++;
       }
-    }
-  }, []);
+
+      // Fallback
+      return { x: boardSize - 5, y: boardSize - 5 };
+    },
+    [boardSize]
+  );
 
   const resetToMenu = () => {
     setDifficulty(null);
@@ -104,6 +128,7 @@ const App: React.FC = () => {
     setSnake(INITIAL_SNAKE_POSITION);
     setApple(INITIAL_APPLE_POSITION);
     setIsPaused(false);
+    setBoardConfig(getResponsiveBoardSize()); // Recalculate on reset
   };
 
   const startGame = useCallback(
@@ -112,6 +137,10 @@ const App: React.FC = () => {
         audioCtxRef.current = new (window.AudioContext ||
           (window as any).webkitAudioContext)();
       }
+      if (audioCtxRef.current.state === "suspended") {
+        audioCtxRef.current.resume();
+      }
+
       setDifficulty(selectedDifficulty);
       setSpeed(DIFFICULTY_SETTINGS[selectedDifficulty].speed);
       setSnake(INITIAL_SNAKE_POSITION);
@@ -140,18 +169,26 @@ const App: React.FC = () => {
       const newDirection = directionRef.current;
       switch (e.key) {
         case "ArrowUp":
+        case "w":
+        case "W":
           if (newDirection !== Direction.DOWN)
             directionRef.current = Direction.UP;
           break;
         case "ArrowDown":
+        case "s":
+        case "S":
           if (newDirection !== Direction.UP)
             directionRef.current = Direction.DOWN;
           break;
         case "ArrowLeft":
+        case "a":
+        case "A":
           if (newDirection !== Direction.RIGHT)
             directionRef.current = Direction.LEFT;
           break;
         case "ArrowRight":
+        case "d":
+        case "D":
           if (newDirection !== Direction.LEFT)
             directionRef.current = Direction.RIGHT;
           break;
@@ -191,9 +228,9 @@ const App: React.FC = () => {
 
       if (
         head.x < 0 ||
-        head.x >= BOARD_SIZE ||
+        head.x >= boardSize ||
         head.y < 0 ||
-        head.y >= BOARD_SIZE
+        head.y >= boardSize
       ) {
         playSound("gameOver");
         setIsGameOver(true);
@@ -224,7 +261,15 @@ const App: React.FC = () => {
 
       return newSnake;
     });
-  }, [apple, isGameOver, difficulty, createRandomApple, playSound, isPaused]);
+  }, [
+    apple,
+    isGameOver,
+    difficulty,
+    createRandomApple,
+    playSound,
+    isPaused,
+    boardSize,
+  ]);
 
   useEffect(() => {
     if (difficulty && !isGameOver && !isPaused) {
@@ -240,33 +285,33 @@ const App: React.FC = () => {
     if (!ctx) return;
 
     ctx.fillStyle = "#1a202c";
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     snake.forEach((segment, index) => {
       ctx.fillStyle = index === 0 ? "#48bb78" : "#38a169";
       ctx.fillRect(
-        segment.x * TILE_SIZE,
-        segment.y * TILE_SIZE,
-        TILE_SIZE,
-        TILE_SIZE
+        segment.x * tileSize,
+        segment.y * tileSize,
+        tileSize,
+        tileSize
       );
       ctx.strokeStyle = "#1a202c";
       ctx.strokeRect(
-        segment.x * TILE_SIZE,
-        segment.y * TILE_SIZE,
-        TILE_SIZE,
-        TILE_SIZE
+        segment.x * tileSize,
+        segment.y * tileSize,
+        tileSize,
+        tileSize
       );
     });
 
     if (snake.length > 0) {
       const head = snake[0];
       ctx.fillStyle = "#000";
-      const eyeSize = TILE_SIZE / 5;
-      const eyeOffset1 = TILE_SIZE / 4;
-      const eyeOffset2 = TILE_SIZE - eyeOffset1 - eyeSize;
-      const headX = head.x * TILE_SIZE;
-      const headY = head.y * TILE_SIZE;
+      const eyeSize = tileSize / 5;
+      const eyeOffset1 = tileSize / 4;
+      const eyeOffset2 = tileSize - eyeOffset1 - eyeSize;
+      const headX = head.x * tileSize;
+      const headY = head.y * tileSize;
 
       switch (directionRef.current) {
         case Direction.UP:
@@ -331,35 +376,38 @@ const App: React.FC = () => {
     ctx.fillStyle = "#f56565";
     ctx.beginPath();
     ctx.arc(
-      apple.x * TILE_SIZE + TILE_SIZE / 2,
-      apple.y * TILE_SIZE + TILE_SIZE / 2,
-      TILE_SIZE / 2.2,
+      apple.x * tileSize + tileSize / 2,
+      apple.y * tileSize + tileSize / 2,
+      tileSize / 2.2,
       0,
       2 * Math.PI
     );
     ctx.fill();
-  }, [snake, apple]);
+  }, [snake, apple, tileSize, canvasWidth, canvasHeight]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-900 font-mono p-4">
-      <h1 className="text-4xl font-bold text-green-400 mb-4 tracking-widest">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-900 font-mono p-2 sm:p-4">
+      <h1 className="text-2xl sm:text-4xl font-bold text-green-400 mb-2 sm:mb-4 tracking-widest">
         SNAKE HUB
       </h1>
       <br />
       <br />
-      <div className="relative bg-gray-800 border-4 border-green-500 shadow-lg shadow-green-500/20 rounded-lg">
-        <div className="absolute -top-14 left-0 w-full flex justify-center items-center gap-4">
-          <div className="bg-gray-900 border-2 border-green-500 px-4 py-2 rounded-md">
-            <span className="text-xl font-bold text-white">Score: {score}</span>
+
+      <div className="relative bg-gray-800 border-2 sm:border-4 border-green-500 shadow-lg shadow-green-500/20 rounded-lg">
+        <div className="absolute -top-12 sm:-top-14 left-0 w-full flex flex-wrap justify-center items-center gap-2 sm:gap-4 px-2">
+          <div className="bg-gray-900 border-2 border-green-500 px-2 sm:px-4 py-1 sm:py-2 rounded-md">
+            <span className="text-sm sm:text-xl font-bold text-white">
+              Score: {score}
+            </span>
           </div>
-          <div className="bg-gray-900 border-2 border-green-500 px-4 py-2 rounded-md">
-            <span className="text-xl font-bold text-white">
-              High Score: {highScore}
+          <div className="bg-gray-900 border-2 border-green-500 px-2 sm:px-4 py-1 sm:py-2 rounded-md">
+            <span className="text-sm sm:text-xl font-bold text-white">
+              High: {highScore}
             </span>
           </div>
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="bg-gray-900 border-2 border-green-500 px-3 py-2 rounded-md text-xl"
+            className="bg-gray-900 border-2 border-green-500 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-lg sm:text-xl"
             aria-label="Toggle Sound"
           >
             {isMuted ? "🔇" : "🔊"}
@@ -367,7 +415,7 @@ const App: React.FC = () => {
           {difficulty && !isGameOver && (
             <button
               onClick={togglePause}
-              className="bg-gray-900 border-2 border-green-500 px-3 py-2 rounded-md text-xl"
+              className="bg-gray-900 border-2 border-green-500 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-lg sm:text-xl"
               aria-label={isPaused ? "Resume Game" : "Pause Game"}
             >
               {isPaused ? "▶️" : "⏸️"}
@@ -377,18 +425,18 @@ const App: React.FC = () => {
 
         <canvas
           ref={canvasRef}
-          width={CANVAS_WIDTH}
-          height={CANVAS_HEIGHT}
-          className="rounded-md"
+          width={canvasWidth}
+          height={canvasHeight}
+          className="rounded-md max-w-full h-auto"
         />
 
         {isPaused && !isGameOver && (
           <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center rounded-lg">
-            <h2 className="text-5xl font-bold text-yellow-400 animate-pulse">
+            <h2 className="text-3xl sm:text-5xl font-bold text-yellow-400 animate-pulse">
               Paused
             </h2>
-            <p className="mt-4 text-white text-lg">
-              Press 'Escape' or the Resume button to continue
+            <p className="mt-4 text-white text-sm sm:text-lg px-4 text-center">
+              Press 'Escape' or Resume to continue
             </p>
           </div>
         )}
@@ -397,38 +445,40 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center rounded-lg p-4">
             {isGameOver ? (
               <div className="text-center">
-                <h2 className="text-5xl font-bold text-red-500">Game Over</h2>
-                <p className="text-xl text-white mt-2">
-                  Your final score is {score}
+                <h2 className="text-3xl sm:text-5xl font-bold text-red-500">
+                  Game Over
+                </h2>
+                <p className="text-lg sm:text-xl text-white mt-2">
+                  Final score: {score}
                 </p>
                 <button
                   onClick={resetToMenu}
-                  className="mt-8 px-6 py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-colors text-xl"
+                  className="mt-6 sm:mt-8 px-4 sm:px-6 py-2 sm:py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-colors text-lg sm:text-xl"
                 >
                   Play Again
                 </button>
               </div>
             ) : (
               <div className="text-center">
-                <h2 className="text-4xl font-bold text-green-400 mb-6">
+                <h2 className="text-2xl sm:text-4xl font-bold text-green-400 mb-4 sm:mb-6">
                   Select Difficulty
                 </h2>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3 sm:gap-4">
                   <button
                     onClick={() => startGame("Easy")}
-                    className="px-8 py-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition-colors text-2xl"
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition-colors text-lg sm:text-2xl"
                   >
                     Easy
                   </button>
                   <button
                     onClick={() => startGame("Medium")}
-                    className="px-8 py-4 bg-yellow-500 text-white font-bold rounded-lg hover:bg-yellow-600 transition-colors text-2xl"
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-yellow-500 text-white font-bold rounded-lg hover:bg-yellow-600 transition-colors text-lg sm:text-2xl"
                   >
                     Medium
                   </button>
                   <button
                     onClick={() => startGame("Hard")}
-                    className="px-8 py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition-colors text-2xl"
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition-colors text-lg sm:text-2xl"
                   >
                     Hard
                   </button>
@@ -438,16 +488,15 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="mt-6 text-gray-400 text-center">
+      <div className="mt-4 sm:mt-6 text-gray-400 text-center text-xs sm:text-base px-4">
         <p>
-          Use <span className="font-bold text-green-400">Arrow Keys</span> to
+          Use{" "}
+          <span className="font-bold text-green-400">Arrow Keys / WASD</span> to
           move
         </p>
         <p>
-          Press <span className="font-bold text-green-400">Escape</span> or
-          click the{" "}
-          <span className="font-bold text-green-400">Pause Button</span> to
-          Pause/Resume
+          Press <span className="font-bold text-green-400">Escape</span> to
+          Pause
         </p>
       </div>
     </div>
