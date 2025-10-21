@@ -607,7 +607,7 @@ const App: React.FC = () => {
                       className="group px-8 py-5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 text-xl shadow-lg"
                     >
                       <div className="flex items-center justify-between">
-                        <span>🟦 Easy</span>
+                        <span>Easy</span>
                         <span className="text-sm opacity-75 group-hover:opacity-100">
                           Chill vibes
                         </span>
@@ -618,7 +618,7 @@ const App: React.FC = () => {
                       className="group px-8 py-5 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all transform hover:scale-105 text-xl shadow-lg"
                     >
                       <div className="flex items-center justify-between">
-                        <span>🟨 Medium</span>
+                        <span>Medium</span>
                         <span className="text-sm opacity-75 group-hover:opacity-100">
                           Balanced
                         </span>
@@ -629,7 +629,7 @@ const App: React.FC = () => {
                       className="group px-8 py-5 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 text-xl shadow-lg"
                     >
                       <div className="flex items-center justify-between">
-                        <span>🟥 Hard</span>
+                        <span>Hard</span>
                         <span className="text-sm opacity-75 group-hover:opacity-100">
                           Pro mode
                         </span>
