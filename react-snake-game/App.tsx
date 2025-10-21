@@ -10,6 +10,7 @@ import {
   INITIAL_DIRECTION,
   DIFFICULTY_SETTINGS,
   MIN_SPEED,
+  HIGH_SCORE_STORAGE_KEY,
 } from './constants';
 
 const App: React.FC = () => {
@@ -21,9 +22,25 @@ const App: React.FC = () => {
   const directionRef = useRef<Direction>(INITIAL_DIRECTION);
   const [speed, setSpeed] = useState<number>(200);
   const [score, setScore] = useState<number>(0);
+  const [highScore, setHighScore] = useState<number>(0);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+
+  useEffect(() => {
+    const savedHighScore = localStorage.getItem(HIGH_SCORE_STORAGE_KEY);
+    if (savedHighScore) {
+      setHighScore(parseInt(savedHighScore, 10));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isGameOver && score > highScore) {
+      setHighScore(score);
+      localStorage.setItem(HIGH_SCORE_STORAGE_KEY, score.toString());
+    }
+  }, [isGameOver, score, highScore]);
 
   const playSound = useCallback((type: 'eat' | 'gameOver') => {
     if (isMuted || !audioCtxRef.current) return;
@@ -63,6 +80,15 @@ const App: React.FC = () => {
       }
     }
   }, []);
+  
+  const resetToMenu = () => {
+    setDifficulty(null);
+    setIsGameOver(false);
+    setScore(0);
+    setSnake(INITIAL_SNAKE_POSITION);
+    setApple(INITIAL_APPLE_POSITION);
+    setIsPaused(false);
+  };
 
   const startGame = useCallback((selectedDifficulty: Difficulty) => {
     if (!audioCtxRef.current) {
@@ -75,9 +101,17 @@ const App: React.FC = () => {
     directionRef.current = INITIAL_DIRECTION;
     setScore(0);
     setIsGameOver(false);
+    setIsPaused(false);
   }, [createRandomApple]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      if (difficulty && !isGameOver) {
+        setIsPaused(prev => !prev);
+      }
+      return;
+    }
+
     const newDirection = directionRef.current;
     switch (e.key) {
       case 'ArrowUp':
@@ -93,7 +127,7 @@ const App: React.FC = () => {
         if (newDirection !== Direction.LEFT) directionRef.current = Direction.RIGHT;
         break;
     }
-  }, []);
+  }, [difficulty, isGameOver]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -103,7 +137,7 @@ const App: React.FC = () => {
   }, [handleKeyDown]);
 
   const gameLoop = useCallback(() => {
-    if (isGameOver || !difficulty) return;
+    if (isGameOver || !difficulty || isPaused) return;
 
     setSnake(prevSnake => {
       const newSnake = [...prevSnake];
@@ -144,14 +178,14 @@ const App: React.FC = () => {
       
       return newSnake;
     });
-  }, [apple, isGameOver, difficulty, createRandomApple, playSound]);
+  }, [apple, isGameOver, difficulty, createRandomApple, playSound, isPaused]);
 
   useEffect(() => {
-    if (difficulty && !isGameOver) {
+    if (difficulty && !isGameOver && !isPaused) {
       const intervalId = setInterval(gameLoop, speed);
       return () => clearInterval(intervalId);
     }
-  }, [gameLoop, speed, difficulty, isGameOver]);
+  }, [gameLoop, speed, difficulty, isGameOver, isPaused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -208,16 +242,26 @@ const App: React.FC = () => {
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-900 font-mono p-4">
       <h1 className="text-4xl font-bold text-green-400 mb-4 tracking-widest">REACT SNAKE</h1>
       <div className="relative bg-gray-800 border-4 border-green-500 shadow-lg shadow-green-500/20 rounded-lg">
-        <div className="absolute -top-12 left-0 w-full flex justify-center items-center gap-4">
-          <div className="bg-gray-900 border-2 border-green-500 px-6 py-1 rounded-md">
-            <span className="text-2xl font-bold text-white">Score: {score}</span>
+        <div className="absolute -top-14 left-0 w-full flex justify-center items-center gap-4">
+          <div className="bg-gray-900 border-2 border-green-500 px-4 py-2 rounded-md">
+            <span className="text-xl font-bold text-white">Score: {score}</span>
           </div>
-          <button onClick={() => setIsMuted(!isMuted)} className="bg-gray-900 border-2 border-green-500 px-3 py-1 rounded-md text-2xl" aria-label="Toggle Sound">
+          <div className="bg-gray-900 border-2 border-green-500 px-4 py-2 rounded-md">
+            <span className="text-xl font-bold text-white">High Score: {highScore}</span>
+          </div>
+          <button onClick={() => setIsMuted(!isMuted)} className="bg-gray-900 border-2 border-green-500 px-3 py-2 rounded-md text-xl" aria-label="Toggle Sound">
             {isMuted ? '🔇' : '🔊'}
           </button>
         </div>
         
         <canvas ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} className="rounded-md" />
+
+        {isPaused && !isGameOver && (
+          <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center rounded-lg">
+            <h2 className="text-5xl font-bold text-yellow-400 animate-pulse">Paused</h2>
+            <p className="mt-4 text-white text-lg">Press 'Escape' to Resume</p>
+          </div>
+        )}
 
         {(!difficulty || isGameOver) && (
           <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center rounded-lg p-4">
@@ -225,8 +269,8 @@ const App: React.FC = () => {
               <div className="text-center">
                 <h2 className="text-5xl font-bold text-red-500">Game Over</h2>
                 <p className="text-xl text-white mt-2">Your final score is {score}</p>
-                <button onClick={() => startGame(difficulty!)} className="mt-8 px-6 py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-colors text-xl">
-                  Restart
+                <button onClick={resetToMenu} className="mt-8 px-6 py-3 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-colors text-xl">
+                  Play Again
                 </button>
               </div>
             ) : (
@@ -250,6 +294,7 @@ const App: React.FC = () => {
       </div>
       <div className="mt-6 text-gray-400 text-center">
         <p>Use <span className="font-bold text-green-400">Arrow Keys</span> to move</p>
+        <p>Press <span className="font-bold text-green-400">Escape</span> to Pause/Resume</p>
       </div>
     </div>
   );
