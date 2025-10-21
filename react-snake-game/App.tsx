@@ -449,7 +449,11 @@ const App: React.FC = () => {
           <div className="flex items-center justify-between">
             {/* Logo/Title */}
             <div className="flex items-center gap-3">
-              <div className="text-2xl">🐍</div>
+              <img
+                src="/logo.png"
+                alt="Snake Hub Logo"
+                className="w-8 h-8 sm:w-10 sm:h-10"
+              />
               <h1 className="text-xl sm:text-2xl font-bold text-green-400 tracking-wider">
                 SNAKE HUB
               </h1>
@@ -461,24 +465,18 @@ const App: React.FC = () => {
                 {user ? (
                   <>
                     <div className="flex items-center gap-2 bg-gray-900 px-3 py-2 rounded-lg border border-green-500/30">
-                      {/* {user.photoURL && (
+                      {user.photoURL && (
                         <img
                           src={user.photoURL}
                           alt="Profile"
                           className="w-8 h-8 rounded-full border-2 border-green-500"
                         />
-                      )} */}
-                      <div className="hidden sm:flex flex-col">
-                        {/* <span className="text-xs text-gray-400">
-                          Signed in as
-                        </span> */}
+                      )}
+                      <div className="flex flex-col">
                         <span className="text-sm font-semibold text-white">
                           {user.displayName || "Player"}
                         </span>
                       </div>
-                      <span className="sm:hidden text-sm font-semibold text-white">
-                        {user.displayName?.split(" ")[0] || "Player"}
-                      </span>
                     </div>
                     <button
                       onClick={handleLogout}
