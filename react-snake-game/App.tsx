@@ -444,54 +444,52 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-900 font-mono">
       {/* Navbar */}
-      <nav className="bg-gray-800 border-b-2 border-green-500 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-3">
+      <nav className="bg-gray-800 border-b-2 border-green-500 shadow-lg sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Title */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <img
                 src="/logo.png"
                 alt="Snake Hub Logo"
-                className="w-8 h-8 sm:w-10 sm:h-10"
+                className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10"
               />
-              <h1 className="text-xl sm:text-2xl font-bold text-green-400 tracking-wider">
+              <h1 className="text-base sm:text-xl md:text-2xl font-bold text-green-400 tracking-wider">
                 SNAKE HUB
               </h1>
             </div>
 
             {/* User Profile Section */}
             {(user || isGuest) && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {user ? (
                   <>
-                    <div className="flex items-center gap-2 bg-gray-900 px-3 py-2 rounded-lg border border-green-500/30">
+                    <div className="flex items-center gap-1 sm:gap-2 bg-gray-900 px-2 sm:px-3 py-1 sm:py-2 rounded-lg border border-green-500/30">
                       {user.photoURL && (
                         <img
                           src={user.photoURL}
                           alt="Profile"
-                          className="w-8 h-8 rounded-full border-2 border-green-500"
+                          className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-green-500"
                         />
                       )}
-                      <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-white">
-                          {user.displayName || "Player"}
-                        </span>
-                      </div>
+                      <span className="text-xs sm:text-sm font-semibold text-white hidden xs:inline max-w-[80px] sm:max-w-none truncate">
+                        {user.displayName?.split(" ")[0] || "Player"}
+                      </span>
                     </div>
                     <button
                       onClick={handleLogout}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-all font-semibold text-sm flex items-center gap-2"
+                      className="bg-red-500 hover:bg-red-600 text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-all font-semibold text-xs sm:text-sm flex items-center gap-1 sm:gap-2"
                       title="Logout"
                     >
                       <span className="hidden sm:inline">Logout</span>
-                      <span>🚪</span>
+                      <span className="text-sm sm:text-base">🚪</span>
                     </button>
                   </>
                 ) : (
-                  <div className="bg-gray-900 px-4 py-2 rounded-lg border border-gray-600 flex items-center gap-2">
-                    <span className="text-2xl">👤</span>
-                    <span className="text-sm text-gray-300 font-medium">
-                      Guest Mode
+                  <div className="bg-gray-900 px-2 sm:px-4 py-1 sm:py-2 rounded-lg border border-gray-600 flex items-center gap-1 sm:gap-2">
+                    <span className="text-lg sm:text-2xl">👤</span>
+                    <span className="text-xs sm:text-sm text-gray-300 font-medium">
+                      Guest
                     </span>
                   </div>
                 )}
@@ -502,23 +500,27 @@ const App: React.FC = () => {
       </nav>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
+      <div className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 md:p-6">
         {/* Game Stats */}
-        <div className="w-full max-w-4xl mb-4">
-          <div className="flex flex-wrap justify-center items-center gap-3">
-            <div className="bg-gray-800 border-2 border-green-500 px-4 sm:px-6 py-3 rounded-lg shadow-lg">
+        <div className="w-full max-w-4xl mb-3 sm:mb-4">
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
+            <div className="bg-gray-800 border-2 border-green-500 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg shadow-lg">
               <div className="flex flex-col items-center">
-                <span className="text-xs text-gray-400 uppercase">Score</span>
-                <span className="text-2xl sm:text-3xl font-bold text-green-400">
+                <span className="text-[10px] sm:text-xs text-gray-400 uppercase">
+                  Score
+                </span>
+                <span className="text-xl sm:text-2xl md:text-3xl font-bold text-green-400">
                   {score}
                 </span>
               </div>
             </div>
 
-            <div className="bg-gray-800 border-2 border-yellow-500 px-4 sm:px-6 py-3 rounded-lg shadow-lg">
+            <div className="bg-gray-800 border-2 border-yellow-500 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg shadow-lg">
               <div className="flex flex-col items-center">
-                <span className="text-xs text-gray-400 uppercase">Best</span>
-                <span className="text-2xl sm:text-3xl font-bold text-yellow-400">
+                <span className="text-[10px] sm:text-xs text-gray-400 uppercase">
+                  Best
+                </span>
+                <span className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400">
                   {highScore}
                 </span>
               </div>
@@ -526,7 +528,7 @@ const App: React.FC = () => {
 
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="bg-gray-800 border-2 border-green-500 px-4 py-3 rounded-lg text-2xl hover:bg-gray-700 transition-all shadow-lg"
+              className="bg-gray-800 border-2 border-green-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-xl sm:text-2xl hover:bg-gray-700 transition-all shadow-lg active:scale-95"
               aria-label="Toggle Sound"
               title={isMuted ? "Unmute" : "Mute"}
             >
@@ -536,7 +538,7 @@ const App: React.FC = () => {
             {difficulty && !isGameOver && (
               <button
                 onClick={togglePause}
-                className="bg-gray-800 border-2 border-green-500 px-4 py-3 rounded-lg text-2xl hover:bg-gray-700 transition-all shadow-lg"
+                className="bg-gray-800 border-2 border-green-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-xl sm:text-2xl hover:bg-gray-700 transition-all shadow-lg active:scale-95"
                 aria-label={isPaused ? "Resume Game" : "Pause Game"}
                 title={isPaused ? "Resume" : "Pause"}
               >
@@ -547,20 +549,20 @@ const App: React.FC = () => {
         </div>
 
         {/* Game Board */}
-        <div className="relative bg-gray-800 border-4 border-green-500 shadow-2xl shadow-green-500/30 rounded-lg overflow-hidden">
+        <div className="relative bg-gray-800 border-2 sm:border-4 border-green-500 shadow-2xl shadow-green-500/30 rounded-lg overflow-hidden max-w-full">
           <canvas
             ref={canvasRef}
             width={canvasWidth}
             height={canvasHeight}
-            className="block"
+            className="block max-w-full h-auto"
           />
 
           {isPaused && !isGameOver && (
-            <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center">
-              <h2 className="text-5xl sm:text-7xl font-bold text-yellow-400 animate-pulse mb-6">
+            <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center p-4">
+              <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-yellow-400 animate-pulse mb-4 sm:mb-6">
                 PAUSED
               </h2>
-              <p className="text-white text-lg sm:text-xl px-4 text-center">
+              <p className="text-white text-sm sm:text-lg md:text-xl px-4 text-center">
                 Press <span className="text-green-400 font-bold">ESC</span> or
                 click <span className="text-green-400 font-bold">Resume</span>
               </p>
@@ -568,20 +570,22 @@ const App: React.FC = () => {
           )}
 
           {(!difficulty || isGameOver) && (
-            <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center p-6">
+            <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center p-4 sm:p-6">
               {isGameOver ? (
-                <div className="text-center">
-                  <h2 className="text-5xl sm:text-7xl font-bold text-red-500 mb-4">
+                <div className="text-center max-w-md">
+                  <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-red-500 mb-3 sm:mb-4">
                     GAME OVER
                   </h2>
-                  <div className="bg-gray-800 border-2 border-green-500 rounded-lg p-6 mb-6">
-                    <p className="text-gray-400 text-sm mb-2">Final Score</p>
-                    <p className="text-4xl sm:text-5xl font-bold text-green-400 mb-4">
+                  <div className="bg-gray-800 border-2 border-green-500 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+                    <p className="text-gray-400 text-xs sm:text-sm mb-2">
+                      Final Score
+                    </p>
+                    <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-green-400 mb-3 sm:mb-4">
                       {score}
                     </p>
                     {score === highScore && score > 0 && (
-                      <div className="bg-yellow-500/20 border border-yellow-500 rounded-lg p-3">
-                        <p className="text-lg text-yellow-400 font-bold animate-pulse">
+                      <div className="bg-yellow-500/20 border border-yellow-500 rounded-lg p-2 sm:p-3">
+                        <p className="text-sm sm:text-base md:text-lg text-yellow-400 font-bold animate-pulse">
                           🎉 NEW HIGH SCORE! 🎉
                         </p>
                       </div>
@@ -589,46 +593,46 @@ const App: React.FC = () => {
                   </div>
                   <button
                     onClick={resetToMenu}
-                    className="px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-all transform hover:scale-105 text-xl shadow-lg"
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-all transform hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl shadow-lg"
                   >
                     🎮 Play Again
                   </button>
                 </div>
               ) : (
-                <div className="text-center">
-                  <h2 className="text-3xl sm:text-5xl font-bold text-green-400 mb-8">
-                    Choose Your Difficulty
+                <div className="text-center max-w-md w-full">
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-green-400 mb-4 sm:mb-6 md:mb-8">
+                    Choose Difficulty
                   </h2>
-                  <div className="flex flex-col gap-4 min-w-[250px]">
+                  <div className="flex flex-col gap-3 sm:gap-4">
                     <button
                       onClick={() => startGame("Easy")}
-                      className="group px-8 py-5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 text-xl shadow-lg"
+                      className="group px-6 sm:px-8 py-3 sm:py-4 md:py-5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl shadow-lg"
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <span>Easy</span>
-                        <span className="text-sm opacity-75 group-hover:opacity-100">
+                        <span className="text-xs sm:text-sm opacity-75 group-hover:opacity-100">
                           Chill vibes
                         </span>
                       </div>
                     </button>
                     <button
                       onClick={() => startGame("Medium")}
-                      className="group px-8 py-5 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all transform hover:scale-105 text-xl shadow-lg"
+                      className="group px-6 sm:px-8 py-3 sm:py-4 md:py-5 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all transform hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl shadow-lg"
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <span>Medium</span>
-                        <span className="text-sm opacity-75 group-hover:opacity-100">
+                        <span className="text-xs sm:text-sm opacity-75 group-hover:opacity-100">
                           Balanced
                         </span>
                       </div>
                     </button>
                     <button
                       onClick={() => startGame("Hard")}
-                      className="group px-8 py-5 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 text-xl shadow-lg"
+                      className="group px-6 sm:px-8 py-3 sm:py-4 md:py-5 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl shadow-lg"
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <span>Hard</span>
-                        <span className="text-sm opacity-75 group-hover:opacity-100">
+                        <span className="text-xs sm:text-sm opacity-75 group-hover:opacity-100">
                           Pro mode
                         </span>
                       </div>
@@ -641,20 +645,24 @@ const App: React.FC = () => {
         </div>
 
         {/* Instructions */}
-        <div className="mt-6 bg-gray-800 border border-gray-700 rounded-lg p-4 max-w-md">
-          <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="mt-4 sm:mt-6 bg-gray-800 border border-gray-700 rounded-lg p-3 sm:p-4 max-w-md w-full">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">⌨️</span>
+              <span className="text-xl sm:text-2xl">⌨️</span>
               <div>
-                <p className="text-gray-400 text-xs">Controls</p>
-                <p className="text-white font-semibold">Arrow Keys / WASD</p>
+                <p className="text-gray-400 text-[10px] sm:text-xs">Controls</p>
+                <p className="text-white font-semibold text-xs sm:text-sm">
+                  Arrows/WASD
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl">⏸️</span>
+              <span className="text-xl sm:text-2xl">⏸️</span>
               <div>
-                <p className="text-gray-400 text-xs">Pause</p>
-                <p className="text-white font-semibold">ESC Key</p>
+                <p className="text-gray-400 text-[10px] sm:text-xs">Pause</p>
+                <p className="text-white font-semibold text-xs sm:text-sm">
+                  ESC Key
+                </p>
               </div>
             </div>
           </div>
@@ -662,12 +670,17 @@ const App: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-4 text-center">
-        <p className="text-gray-400 text-sm">
-          Made with <span className="text-red-500">❤️ By </span>
-          <span className="text-green-500">
-            <a href="https://github.com/mrpawarGit/GameQuest">SNAKE HUB</a>
-          </span>
+      <footer className="bg-gray-800 border-t border-gray-700 py-3 sm:py-4 text-center px-4">
+        <p className="text-gray-400 text-xs sm:text-sm">
+          Made with <span className="text-red-500">❤️</span> by{" "}
+          <a
+            href="https://github.com/mrpawarGit/GameQuest"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-500 hover:text-green-400 font-semibold transition-colors"
+          >
+            SNAKE HUB
+          </a>
         </p>
       </footer>
     </div>
