@@ -8,7 +8,7 @@ A modern, feature-rich Snake game built with React, TypeScript, HTML5 Canvas, an
 
 ### Gameplay
 
-- **Three Difficulty Levels**: Easy, Medium, and Hard with different speeds and acceleration
+- **Three Difficulty Levels**: Easy, Medium, and Hard with different speeds and acceleration.
 - **Progressive Difficulty**: Game speed increases as you eat more apples
 - **Responsive Controls**: Arrow Keys and WASD support
 - **Pause/Resume**: Press ESC or click the pause button anytime
