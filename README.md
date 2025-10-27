@@ -263,12 +263,15 @@ Contributions are welcome! Here's how:
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-### Contributors
+## 👥 Authors
 
-- [**Mayur Pawar**](https://github.com/mrpawarGit)
-- [**Shweta**](https://github.com/Shwetaaa-coder)
-- [**Manikanta**](https://github.com/kmanikanta9)
-- [**Amutha**](https://github.com/amutharaj0597)
+*Mayur* - [@mrpawarGit](https://github.com/mrpawarGit)
+
+*Shweta* - [@Shwetaaa-coder](https://github.com/Shwetaaa-coder)
+
+*Manikanta* - [@kmanikanta9](https://github.com/kmanikanta9)
+
+*Amutha* - [@amutharaj0597](https://github.com/amutharaj0597)
 
 ## 📝 Future Enhancements
 
